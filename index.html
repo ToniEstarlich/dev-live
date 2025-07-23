@@ -1,12 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+     <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-DET49CJ703"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-DET49CJ703');
+    </script>
+
+    <script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  
+  gtag('consent', 'default', {
+    'analytics_storage': 'denied',
+    'ad_storage': 'denied'
+  });
+
+  gtag('js', new Date());
+  gtag('config', 'G-DET49CJ703'); // Tu ID de Analytics
+</script>
+
     <!-- Basic SEO Setup -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <!-- Primary Meta Tags -->
     <title>Dev Live - Latest Web Development News & Tech Trends</title>
+
     <meta name="description" content="Stay up-to-date with the latest web development news, SEO strategies, and coding best practices. Dev Live keeps you informed on the latest trends in technology.">
     <meta name="keywords" content="web development, tech news, coding tutorials, JavaScript, React, SEO strategies, latest frameworks, software development">
     <meta name="author" content="Antonio Estarlich">
@@ -137,7 +162,57 @@
                     <a href="https://toniestarlich.github.io/ToniDevStudio/">Contact</a>
                 </div>
             </footer>
+
+    <!-- Cookies question-->
+    <div id="consent-banner"
+        style="position:fixed; bottom:0; width:100%; background:#222; color:#fff; padding:15px; text-align:center; z-index:1000;">
+        We use cookies to improve your experience.
+        <button id="accept-cookies" style="margin-left:10px; padding:5px 10px;">Accept</button>
+        <button id="reject-cookies" style="margin-left:10px; padding:5px 10px;">Reject</button>
+    </div>
+
     <!-- JavaScript external-->
     <script src="JS/slide.js"></script>
+    <script src="JS/cookies.js"></script>
+
+    <!-- Cookie Consent by Osano -->
+<script src="https://cdn.cookieconsent.com/releases/3.1.0/cookie-consent.js"></script>
+<link rel="stylesheet" href="https://cdn.cookieconsent.com/releases/3.1.0/cookie-consent.css" />
+
+<script>
+window.addEventListener("load", function(){
+  window.cookieconsent.initialise({
+    "palette": {
+      "popup": {
+        "background": "#000"
+      },
+      "button": {
+        "background": "#f1d600"
+      }
+    },
+    "type": "opt-in",
+    "content": {
+      "message": "We use cookies to improve your experience and analyze traffic. Do you accept?",
+      "allow": "Yes, I accept",
+      "deny": "No, thanks",
+      "link": "https://yourwebsite.com/cookie-policy",
+      "href": "https://yourwebsite.com/cookie-policy"
+    },
+    onStatusChange: function(status) {
+      if (this.hasConsented()) {
+        // Enable Google Analytics & Consent Mode
+        gtag('consent', 'update', {
+          'analytics_storage': 'granted'
+        });
+      } else {
+        gtag('consent', 'update', {
+          'analytics_storage': 'denied'
+        });
+      }
+    }
+  });
+});
+</script>
+
 </body>
 </html>

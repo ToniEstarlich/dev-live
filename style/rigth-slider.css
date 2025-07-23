@@ -1,0 +1,127 @@
+/* === SIDEBAR === */
+
+  .right-slider {
+  position: sticky;
+  top: 20px;
+  align-self: start; /* importante en layouts flex */
+  height: fit-content;
+  height: 110vh;
+  max-height: calc(100vh - 40px);
+  flex: 0 0 25%;
+  padding: 20px;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  background-color: white;
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+  .right-slider {
+    position: static;
+    width: 100%;
+    flex: 1 1 100%;
+    height: auto;
+    border-radius: 12px;
+    margin-top: 20px;
+  }
+}
+
+
+
+  .slide {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+    background-size: cover;
+    background-position: center;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.8rem;
+    padding: 20px;
+    text-shadow: 2px 2px 6px black;
+    text-align: center;
+  }
+  
+  .slide.active {
+    opacity: 1;
+    z-index: 10;
+  }
+
+  .slide::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.3); /* Oscurece un poco */
+    z-index: 1;
+    border-radius: 12px;
+  }
+  /* text animation  */
+  .slide-text {
+    opacity: 0;
+    position: relative;
+    z-index: 2;
+  }
+  .slide.active .slide-text {
+    opacity: 1;
+  }
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+ /* responsive Slide */
+
+ @media (max-width: 768px) {
+    .right-slider {
+        position: relative; /* muy importante */
+        width: 100%;
+        height: 220px; /* o lo que quieras para móvil */
+        padding: 0;
+        margin-top: 20px;
+    }
+
+    .slide {
+        height: 100%; /* se ajusta al height del contenedor */
+        font-size: 1.2rem;
+    }
+}
+
+
+  @media (max-width: 480px) {
+      .slide {
+          font-size: 1rem;
+          padding: 10px;
+      }
+  } 
+
+  /* text animation */
+
+  @keyframes fadeInUp {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInLeft {
+  0% { opacity: 0; transform: translateX(-30px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeInRight {
+  0% { opacity: 0; transform: translateX(30px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes zoomIn {
+  0% { opacity: 0; transform: scale(0.8); }
+  100% { opacity: 1; transform: scale(1); }
+}

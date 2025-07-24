@@ -190,7 +190,7 @@ header .logo h1 {
 /* End of the Live logo */
 
 header .navbar a {
-    color: rgb(46, 46, 46);
+    color: rgb(100, 100, 100);
     margin: 0 10px;
     text-decoration: none;
     font-weight: 600;
@@ -207,7 +207,13 @@ header .navbar a:hover {
 }
 
 .navbar {
-    position: fixed;
+        position: fixed;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 16px;
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 /* === LAYOUT CONTAINER === */

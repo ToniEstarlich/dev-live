@@ -1,0 +1,94 @@
+  .horizontal-slider {
+  position: relative;
+  width: calc(100% - 30px);
+  height: 30vh;
+  overflow: hidden;
+  border-radius: 12px;
+  margin: 15px auto;
+  max-width: 900px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2); /* Adds subtle depth */
+}
+
+/* Container for all slides */
+.slider-track {
+  display: flex;
+  height: 100%;
+  transition: transform 1s ease-in-out;
+  will-change: transform; /* Improves animation performance */
+}
+
+/* Each slide */
+.slide-down {
+  min-width: 100%;
+  height: 100%;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Dark overlay */
+.slide-down::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0,0,0,0.6)); /* Gradient for depth */
+  z-index: 1;
+  border-radius: 12px;
+}
+
+/* Slide text styling */
+.slide-text-down {
+  position: relative;
+  z-index: 2;
+  font-size: 1.8rem;
+  color: #fff;
+  text-align: center;
+  padding: 20px;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
+  opacity: 0;
+  max-width: 85%;
+  margin: 0 auto;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+/* Entrance animations */
+@keyframes fadeInUp {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes zoomIn {
+  0% { opacity: 0; transform: scale(0.8); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes fadeInLeft {
+  0% { opacity: 0; transform: translateX(-30px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeInRight {
+  0% { opacity: 0; transform: translateX(30px); }
+  100% { opacity: 1; transform: translateX(0); }
+}
+
+/* Responsive: tablet */
+@media (max-width: 768px) {
+  .slide-text-down {
+    font-size: 1.2rem;
+    padding: 10px;
+  }
+}
+
+/* Responsive: mobile */
+@media (max-width: 480px) {
+  .slide-text-down {
+    font-size: 1rem;
+  }
+}

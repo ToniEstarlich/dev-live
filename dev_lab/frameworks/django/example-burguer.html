@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Fullstack Django Example - Burger Shop</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- W3.CSS Styles -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-teal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!--CSS Style-->
+    <link rel="stylesheet" href="../../css/frameworks.css">
+</head>
+
+<body class="w3-light-grey" id="django">
+    
+    <!-- Sidebar / Table of Contents -->
+    <div class="django w3-sidebar w3-bar-block w3-large" id="mySidebar" style="width:300px;">
+        <h3 class="w3-bar-item">Contents</h3>
+        <a href="#structure" class="w3-bar-item w3-button">0. Project Structure</a>
+        <a href="#database" class="w3-bar-item w3-button">1. Database</a>
+        <a href="#backend" class="w3-bar-item w3-button">2. Django Views</a>
+        <a href="#javascript" class="w3-bar-item w3-button">3. JavaScript API</a>
+        <a href="#templates" class="w3-bar-item w3-button">4. Django Templates</a>
+        <a href="#testing" class="w3-bar-item w3-button">5. Testing</a>
+        <a href="#flow" class="w3-bar-item w3-button">6. Complete Data Flow</a>
+        <h3 class="w3-bar-item">
+            <a href="../../index.html" class="w3-button" style="text-decoration:none; color:inherit;">Back</a>
+        </h3>
+    </div>
+
+    <!-- Overlay for mobile -->
+    <div class="w3-overlay w3-hide-large" onclick="closeSidebar()" id="myOverlay" style="cursor:pointer"></div>
+
+    <!-- Main content -->
+    <div class="w3-main">
+
+        <!-- Sidebar toggle button for mobile -->
+        <button class="openbtn w3-hide-large" id="django" onclick="openSidebar()">☰ Contents</button>
+
+        <!-- Page Header -->
+        <header class="w3-container w3-padding-64 w3-center" id="django">
+            <h1 class="w3-xxxlarge">Fullstack Django Example - Burger Shop</h1>
+            <p class="w3-xlarge">From Database to Frontend with JS and Django Templates</p>
+        </header>
+
+        <!-- 0. Project Structure -->
+        <div class="w3-container w3-white w3-padding-32 w3-margin">
+            <h2 id="structure">0️⃣ Project Structure → Files & Folders</h2>
+            <p>Before diving into Django models and views, here’s how the project is structured:</p>
+            <pre class="code-block">
+        <span class="folder">burger_shop/</span>               <span class="comment"># Main project folder (created by django-admin)</span>
+        │
+        ├── <span class="folder">burger_shop/</span>             <span class="comment"># Django project settings</span>
+        │   ├── __init__.py
+        │   ├── settings.py          <span class="comment"># Database, installed apps, middleware, etc.</span>
+        │   ├── urls.py              <span class="comment"># Project-level URL routing</span>
+        │   ├── asgi.py
+        │   └── wsgi.py
+        │
+        ├── <span class="folder">shop/</span>                    <span class="comment"># Our app (burgers, cart, etc.)</span>
+        │   ├── __init__.py
+        │   ├── models.py            <span class="comment"># Django models (Burger, CartItem)</span>
+        │   ├── views.py             <span class="comment"># API and page views</span>
+        │   ├── urls.py              <span class="comment"># App-level routes (included in project urls.py)</span>
+        │   ├── templates/           <span class="comment"># Django templates</span>
+        │   │   └── shop/
+        │   │       └── index.html
+        │   └── static/              <span class="comment"># JS, CSS, images</span>
+        │       ├── js/
+        │       └── css/
+        │
+        ├── db.sqlite3               <span class="comment"># Default database (or PostgreSQL/MySQL if configured)</span>
+        ├── manage.py                <span class="comment"># Django’s CLI tool</span>
+        └── requirements.txt         <span class="comment"># Python dependencies</span>
+          </pre>
+            <p>This structure separates project settings (burger_shop) from the app logic (shop), keeping models, views,
+                templates, and static assets well organized.</p>
+        </div>
+
+        <!-- 1. Database -->
+        <div class="w3-container w3-white w3-padding-32 w3-margin">
+            <h2 id="database">1️⃣ Database → Models (Python / Django)</h2>
+            <p>We define the tables for burgers and cart items using Django models:</p>
+            <pre class="code-block">
+        <span class="comment"># Django model for burgers</span>
+        <span class="keyword">from</span> django.db <span class="keyword">import</span> models
+        
+        <span class="keyword">class</span> <span class="class-name">Burger</span>(models.Model):
+            <span class="variable">name</span> = models.CharField(max_length=120)
+            <span class="variable">price</span> = models.DecimalField(max_digits=6, decimal_places=2)
+        
+            <span class="keyword">def</span> <span class="func-name">to_dict</span>(self):
+                <span class="keyword">return</span> {
+                    'id': self.id,
+                    'name': self.name,
+                    'price': float(self.price)
+                }
+              </pre>
+        </div>
+
+        <!-- 2. Django Backend -->
+        <div class="w3-container w3-white w3-padding-32 w3-margin">
+            <h2 id="backend">2️⃣ Django Views → JSON API</h2>
+            <p>Example view to return all burgers as JSON:</p>
+            <pre class="code-block">
+        <span class="keyword">from</span> django.http <span class="keyword">import</span> JsonResponse
+        <span class="keyword">from</span> .models <span class="keyword">import</span> Burger
+        
+        <span class="keyword">def</span> <span class="func-name">burger_list</span>(request):
+            <span class="variable">burgers</span> = [b.to_dict() for b in Burger.objects.all()]
+            <span class="keyword">return</span> JsonResponse(<span class="variable">burgers</span>, safe=False)
+          </pre>
+            <p>Don't forget to add the URL in <code>urls.py</code>:</p>
+            <pre class="code-block">
+        <span class="keyword">from</span> django.urls <span class="keyword">import</span> path
+        <span class="keyword">from</span> . <span class="keyword">import</span> views
+        
+        <span class="variable">urlpatterns</span> = [
+            path(<span class="string">'burgers/api/'</span>, views.burger_list, name=<span class="string">'burger_list'</span>),
+        ]
+          </pre>
+            <p>Django receives the GET request via this URL, queries the database, and returns JSON.</p>
+        </div>
+
+
+        <!-- 3. JavaScript -->
+        <div class="w3-container w3-white w3-padding-32 w3-margin">
+            <h2 id="javascript">3️⃣ JavaScript → API Consumption</h2>
+            <p>Example function to add items to the cart:</p>
+            <pre class="code-block">
+        <span class="keyword">async</span> <span class="keyword">function</span> <span class="func-name">addToCart</span>(<span class="param">burgerId</span>, <span class="param">qty</span> = <span class="number">1</span>) {
+          <span class="variable">const</span> <span class="variable">res</span> = <span class="keyword">await</span> fetch(<span class="string">'/cart/api'</span>, {
+            <span class="prop">method</span>: <span class="string">'POST'</span>,
+            <span class="prop">headers</span>: {<span class="string">'Content-Type'</span>: <span class="string">'application/json'</span>},
+            <span class="prop">body</span>: JSON.stringify({<span class="prop">burger_id</span>: <span class="variable">burgerId</span>, <span class="prop">quantity</span>: <span class="variable">qty</span>})
+          });
+          <span class="keyword">return</span> <span class="variable">res</span>.json();
+        }
+              </pre>
+        </div>
+
+        <!-- 4. Django Templates -->
+        <div class="w3-container w3-white w3-padding-32 w3-margin">
+            <h2 id="templates">4️⃣ Django Templates → Initial Render</h2>
+            <p>Template example using Django to display burgers:</p>
+            <pre class="code-block">
+        <span class="tag">&lt;ul</span> <span class="attr">id</span>=<span class="string">"catalog"</span><span class="tag">&gt;</span>
+          <span class="jinja">{% for b in burgers %}</span>
+            <span class="tag">&lt;li&gt;</span>
+              <span class="tag">&lt;strong&gt;</span><span class="variable">{{ b.name }}</span><span class="tag">&lt;/strong&gt;</span> — $<span class="variable">{{ b.price }}</span>
+              <span class="tag">&lt;button</span> <span class="attr">class</span>=<span class="string">"add-to-cart"</span> <span class="attr">data-id</span>=<span class="variable">{{ b.id }}</span><span class="tag">&gt;</span>Add<span class="tag">&lt;/button&gt;</span>
+            <span class="tag">&lt;/li&gt;</span>
+          <span class="jinja">{% endfor %}</span>
+        <span class="tag">&lt;/ul&gt;</span>
+              </pre>
+        </div>
+
+        <!-- 5. Testing Python & JS -->
+        <div class="w3-container w3-white w3-padding-32 w3-margin">
+            <h2 id="testing">5️⃣ Testing → Python & JS</h2>
+            <p>Example of testing Python model and JS function:</p>
+            <pre class="code-block">
+        <span class="comment"># Python test for Burger model</span>
+        <span class="keyword">def</span> <span class="func-name">test_burger_to_dict</span>():
+            <span class="variable">b</span> = Burger(name=<span class="string">'Cheese'</span>, price=<span class="number">5.99</span>)
+            <span class="keyword">assert</span> b.to_dict() == {'id': None, 'name': 'Cheese', 'price': 5.99}
+        
+        <span class="comment">// JS test for addToCart function</span>
+        <span class="keyword">async</span> <span class="keyword">function</span> <span class="func-name">testAddToCart</span>() {
+          <span class="variable">res</span> = <span class="keyword">await</span> addToCart(1, 2);
+          <span class="keyword">console</span>.log(<span class="string">'Cart response:'</span>, <span class="variable">res</span>);
+        }
+              </pre>
+        </div>
+
+        <!-- 6. Complete Data Flow + Testing -->
+        <div class="w3-container w3-white w3-padding-32 w3-margin">
+            <h2 id="flow">6️⃣ Complete Data Flow</h2>
+            <table class="w3-table w3-bordered w3-striped">
+                <tr>
+                    <th>Layer</th>
+                    <th>Example</th>
+                    <th>Purpose</th>
+                </tr>
+                <tr>
+                    <td>Database</td>
+                    <td>burgers table</td>
+                    <td>Stores burger items and cart entries</td>
+                </tr>
+                <tr>
+                    <td>Python Models</td>
+                    <td>Burger.objects.all()</td>
+                    <td>Queries DB and converts rows to Python objects</td>
+                </tr>
+                <tr>
+                    <td>Django Views</td>
+                    <td>/burgers/api</td>
+                    <td>Handles JSON API & cart actions</td>
+                </tr>
+                <tr>
+                    <td>Frontend JS</td>
+                    <td>fetch('/cart/api')</td>
+                    <td>Sends requests and updates UI dynamically</td>
+                </tr>
+                <tr>
+                    <td>Django Templates</td>
+                    <td>{{ '{{ b.name }}' }}</td>
+                    <td>Renders initial data and action buttons</td>
+                </tr>
+                <tr>
+                    <td>Testing</td>
+                    <td>
+                        Python: <code>test_burger_to_dict()</code><br>
+                        JS: <code>testAddToCart()</code>
+                    </td>
+                    <td>Ensures backend & frontend logic works</td>
+                </tr>
+            </table>
+        </div>
+        
+        
+        </div>
+        <script src="../../js/framework.js"></script>
+        </body>
+        
+        </html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Fullstack React Example - Burger Shop</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <!-- W3.CSS -->
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-teal.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <!-- Your syntax CSS -->
+  <link rel="stylesheet" href="../../css/frameworks.css">
+</head>
+
+<body class="w3-light-grey" id="react">
+
+  <!-- Sidebar / Table of Contents -->
+  <div class="react w3-sidebar w3-bar-block w3-large" id="mySidebar" style="width:300px;">
+    <h3 class="w3-bar-item">Contents</h3>
+    <a href="#structure" class="w3-bar-item w3-button">0. Project Structure</a>
+    <a href="#database" class="w3-bar-item w3-button">1. Database</a>
+    <a href="#backend" class="w3-bar-item w3-button">2. Backend (Node/Express)</a>
+    <a href="#react-frontend" class="w3-bar-item w3-button">3. React Frontend</a>
+    <a href="#testing" class="w3-bar-item w3-button">4. Testing</a>
+    <a href="#flow" class="w3-bar-item w3-button">5. Complete Data Flow</a>
+    <h3 class="w3-bar-item">
+      <a href="../../index.html" class="w3-button" style="text-decoration:none; color:inherit;">Back</a>
+    </h3>
+  </div>
+
+  <!-- Overlay for mobile -->
+  <div class="w3-overlay w3-hide-large" onclick="closeSidebar()" id="myOverlay" style="cursor:pointer"></div>
+
+  <!-- Main content -->
+  <div class="w3-main">
+
+    <!-- Sidebar toggle for mobile -->
+    <button class="openbtn w3-hide-large" id="react" onclick="openSidebar()">☰ Contents</button>
+
+    <!-- Header -->
+    <header class="w3-container w3-padding-64 w3-center" id="react">
+      <h1 class="w3-xxxlarge">Fullstack React Example - Burger Shop</h1>
+      <p class="w3-xlarge">React frontend + Node/Express API + PostgreSQL (or other DB)</p>
+    </header>
+
+    <!-- 0. Project Structure -->
+    <div class="w3-container w3-white w3-padding-32 w3-margin">
+      <h2 id="structure">0️⃣ Project Structure → Files & Folders</h2>
+      <pre class="code-block">
+<span class="folder">burger-shop/</span>                    <span class="comment">// root (monorepo / two folders)</span>
+│
+├── <span class="folder">server/</span>                     <span class="comment">// Node/Express backend</span>
+│   ├── <span class="folder">src/</span>
+│   │   ├── <span class="folder">models/</span>            <span class="comment">// Sequelize / Knex models</span>
+│   │   ├── <span class="folder">routes/</span>            <span class="comment">// API routes (burgers, cart)</span>
+│   │   └── <span class="file">index.js</span>            <span class="comment">// express app</span>
+│   └── <span class="file">package.json</span>
+│
+├── <span class="folder">client/</span>                     <span class="comment">// React app (create-react-app / Vite)</span>
+│   ├── <span class="folder">src/</span>
+│   │   ├── <span class="file">App.jsx</span>
+│   │   ├── <span class="file">components/BurgerList.jsx</span></span>
+│   │   └── <span class="folder">context/</span>         <span class="comment">// CartContext</span>
+│   └── <span class="file">package.json</span>
+│
+├── <span class="folder">migrations/</span>                <span class="comment">// DB migrations</span>
+└── <span class="file">README.md</span>
+      </pre>
+      <p>We keep server and client separated for clarity — same flow as other stacks: DB ↔ API ↔ Frontend.</p>
+    </div>
+
+    <!-- 1. Database -->
+    <div class="w3-container w3-white w3-padding-32 w3-margin">
+      <h2 id="database">1️⃣ Database → Model (Sequelize example)</h2>
+      <p>Sequelize model for burgers (server/src/models/burger.js):</p>
+      <pre class="code-block">
+<span class="comment">// server/src/models/burger.js</span>
+<span class="keyword">module</span>.<span class="prop">exports</span> = (sequelize, DataTypes) =&gt; {
+  <span class="keyword">const</span> <span class="class-name">Burger</span> = sequelize.define(<span class="string">'Burger'</span>, {
+    name: { type: DataTypes.STRING, allowNull: <span class="keyword">false</span> },
+    price: { type: DataTypes.DECIMAL(6,2), allowNull: <span class="keyword">false</span> }
+  });
+  <span class="keyword">return</span> <span class="class-name">Burger</span>;
+};
+      </pre>
+      <p>Use migrations to create the table and seed initial data.</p>
+    </div>
+
+    <!-- 2. Backend -->
+    <div class="w3-container w3-white w3-padding-32 w3-margin">
+      <h2 id="backend">2️⃣ Backend → Node / Express API</h2>
+      <p>Minimal Express routes (server/src/routes/burgers.js):</p>
+      <pre class="code-block">
+<span class="comment">// server/src/routes/burgers.js</span>
+<span class="keyword">const</span> express = require(<span class="string">'express'</span>);
+<span class="keyword">const</span> router = express.Router();
+<span class="keyword">const</span> { Burger } = require(<span class="string">'../models'</span>);
+
+<span class="comment">/* GET /api/burgers */</span>
+router.get(<span class="string">'/'</span>, <span class="keyword">async</span> (req, res) =&gt; {
+  <span class="keyword">const</span> burgers = <span class="keyword">await</span> Burger.findAll();
+  res.json(burgers);
+});
+
+<span class="comment">/* POST /api/cart */</span>
+router.post(<span class="string">'/cart'</span>, <span class="keyword">async</span> (req, res) =&gt; {
+  <span class="comment">// handle add to cart (session, DB cart table, or persisted cart)</span>
+  res.json({ success: <span class="keyword">true</span> });
+});
+
+module.exports = router;
+      </pre>
+
+      <p>Server entry (server/src/index.js):</p>
+      <pre class="code-block">
+<span class="comment">// server/src/index.js</span>
+<span class="keyword">const</span> express = require(<span class="string">'express'</span>);
+<span class="keyword">const</span> burgersRoutes = require(<span class="string">'./routes/burgers'</span>);
+
+<span class="keyword">const</span> app = express();
+app.use(express.json());
+app.use(<span class="string">'/api/burgers'</span>, burgersRoutes);
+app.use(<span class="string">'/api/cart'</span>, burgersRoutes); <span class="comment">// minimal example</span>
+
+app.listen(<span class="number">4000</span>, () =&gt; console.log(<span class="string">'Server running on 4000'</span>));
+      </pre>
+    </div>
+
+    <!-- 3. React Frontend -->
+    <div class="w3-container w3-white w3-padding-32 w3-margin">
+      <h2 id="react-frontend">3️⃣ React Frontend → Components & Fetch</h2>
+
+      <p><strong>App.jsx</strong> (client/src/App.jsx):</p>
+      <pre class="code-block">
+<span class="comment">// client/src/App.jsx</span>
+<span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span>;
+<span class="keyword">import</span> <span class="class-name">BurgerList</span> <span class="keyword">from</span> <span class="string">'./components/BurgerList'</span>;
+
+<span class="keyword">export default function</span> <span class="func-name">App</span>() {
+  <span class="keyword">return</span> (
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;h1&gt;</span>React Burger Shop<span class="tag">&lt;/h1&gt;</span>
+      <span class="tag">&lt;BurgerList /&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  );
+}
+      </pre>
+
+      <p><strong>BurgerList.jsx</strong> (client/src/components/BurgerList.jsx):</p>
+      <pre class="code-block">
+<span class="comment">// client/src/components/BurgerList.jsx</span>
+<span class="keyword">import</span> React, { <span class="prop">useEffect</span>, <span class="prop">useState</span> } <span class="keyword">from</span> <span class="string">'react'</span>;
+
+<span class="keyword">export default function</span> <span class="func-name">BurgerList</span>() {
+  <span class="keyword">const</span> [burgers, setBurgers] = <span class="keyword">useState</span>([]);
+  <span class="keyword">useEffect</span>(() =&gt; {
+    <span class="keyword">fetch</span>(<span class="string">'/api/burgers'</span>)
+      .then(r =&gt; r.json())
+      .then(setBurgers);
+  }, []);
+
+  <span class="keyword">return</span> (
+    <span class="tag">&lt;ul id="catalog"&gt;</span>
+      {burgers.map(b =&gt; (
+        <span class="tag">&lt;li key={b.id}&gt;</span>
+          <span class="tag">&lt;strong&gt;</span>{b.name}<span class="tag">&lt;/strong&gt;</span> — ${b.price}
+          <span class="tag">&lt;button</span> <span class="attr">onClick</span>={() =&gt; addToCart(b.id)}<span class="tag">&gt;</span>Add<span class="tag">&lt;/button&gt;</span>
+        <span class="tag">&lt;/li&gt;</span>
+      ))}
+    <span class="tag">&lt;/ul&gt;</span>
+  );
+}
+
+<span class="comment">// addToCart calls API</span>
+<span class="keyword">async function</span> <span class="func-name">addToCart</span>(id) {
+  <span class="keyword">await</span> fetch(<span class="string">'/api/cart'</span>, { method: <span class="string">'POST'</span>, headers: { <span class="string">'Content-Type'</span>: <span class="string">'application/json'</span> }, body: JSON.stringify({ burgerId: id, qty: 1 })});
+}
+      </pre>
+
+      <p>Run React dev server (CRA / Vite) and proxy `/api` to the backend in dev for CORS convenience.</p>
+    </div>
+
+    <!-- 4. Testing -->
+    <div class="w3-container w3-white w3-padding-32 w3-margin">
+      <h2 id="testing">4️⃣ Testing → Jest / RTL + Supertest</h2>
+      <p>Examples:</p>
+
+      <pre class="code-block">
+<span class="comment">// server/tests/burgers.test.js (supertest)</span>
+<span class="keyword">const</span> request = require(<span class="string">'supertest'</span>);
+<span class="keyword">const</span> app = require(<span class="string">'../src/index'</span>);
+
+describe(<span class="string">'GET /api/burgers'</span>, () =&gt; {
+  it(<span class="string">'responds with json'</span>, <span class="keyword">async</span> () =&gt; {
+    <span class="keyword">const</span> res = <span class="keyword">await</span> request(app).get(<span class="string">'/api/burgers'</span>);
+    expect(res.status).toBe(<span class="number">200</span>);
+    expect(Array.isArray(res.body)).toBe(<span class="keyword">true</span>);
+  });
+});
+
+<span class="comment">// client/src/components/BurgerList.test.jsx (React Testing Library)</span>
+import <span class="prop">render</span>, <span class="prop">screen</span> from <span class="string">'@testing-library/react'</span>;
+import BurgerList from <span class="string">'./BurgerList'</span>;
+
+test(<span class="string">'renders list'</span>, () =&gt; {
+  render(&lt;BurgerList /&gt;);
+  <span class="prop">expect</span>(screen.getByText(/React Burger Shop/i)).toBeInTheDocument();
+});
+      </pre>
+
+      <p>Use Jest for unit + RTL for components; Supertest for API endpoints.</p>
+    </div>
+
+    <!-- 5. Complete Data Flow -->
+    <div class="w3-container w3-white w3-padding-32 w3-margin">
+      <h2 id="flow">5️⃣ Complete Data Flow</h2>
+      <table class="w3-table w3-bordered w3-striped">
+        <tr><th>Layer</th><th>Example</th><th>Purpose</th></tr>
+        <tr><td>Database</td><td>Postgres (Sequelize)</td><td>Store burgers, cart rows</td></tr>
+        <tr><td>Backend</td><td>Express routes</td><td>JSON API for CRUD</td></tr>
+        <tr><td>React Frontend</td><td>App.jsx, BurgerList.jsx</td><td>Render initial UI, call API</td></tr>
+        <tr><td>Testing</td><td>Jest / RTL / Supertest</td><td>Unit & integration tests</td></tr>
+        <tr><td>Dev flow</td><td>npm run dev / proxy</td><td>Local dev with hot reload</td></tr>
+      </table>
+    </div>
+
+  </div>
+
+  <script>
+    function openSidebar(){
+      document.getElementById("mySidebar").style.display="block";
+      document.getElementById("myOverlay").style.display="block";
+    }
+    function closeSidebar(){
+      document.getElementById("mySidebar").style.display="none";
+      document.getElementById("myOverlay").style.display="none";
+    }
+  </script>
+
+  <script src="../../js/framework.js"></script>
+</body>
+</html>

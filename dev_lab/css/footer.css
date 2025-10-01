@@ -1,0 +1,31 @@
+/* === FOOTER === */
+.footer {
+    background-color: #7a8188 ;
+    color: white;
+    text-align: center;
+    padding: 15px 0;
+    margin-top: 40px;
+    flex-shrink: 0;
+}
+
+.footer p {
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.footer-links {
+    margin-top: 10px;
+}
+
+.footer-links a {
+    color: white;
+    margin: 0 15px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: #40e23a;
+    text-decoration: underline;
+}

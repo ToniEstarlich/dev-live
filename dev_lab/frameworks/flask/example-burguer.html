@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Fullstack Flask Example - Blog Tutorial</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- W3.CSS Styles -->
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-teal.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <!--CSS Style-->
+  <link rel="stylesheet" href="../../css/frameworks.css">
+
+</head>
+
+<body class="w3-light-grey" id="flask">
+
+  <!-- Sidebar / Table of Contents -->
+  <div class="flask w3-sidebar w3-bar-block w3-large" id="mySidebar" style="width:300px;">
+    <h3 class="w3-bar-item">Contents</h3>
+    <a href="#structure" class="w3-bar-item w3-button">0. Project Structure</a>
+    <a href="#database" class="w3-bar-item w3-button">1. Database</a>
+    <a href="#backend" class="w3-bar-item w3-button">2. Flask Backend</a>
+    <a href="#javascript" class="w3-bar-item w3-button">3. JavaScript API</a>
+    <a href="#jinja" class="w3-bar-item w3-button">4. HTML / Jinja</a>
+    <a href="#testing" class="w3-bar-item w3-button">5. Testing</a>
+    <a href="#flow" class="w3-bar-item w3-button">6. Complete Data Flow</a>
+    <h3 class="w3-bar-item">
+      <a href="../../index.html" class="w3-button" style="text-decoration:none; color:inherit;">Back</a>
+    </h3>
+  </div>
+
+
+  <!-- Overlay for mobile -->
+  <div class="w3-overlay w3-hide-large" onclick="closeSidebar()" id="myOverlay" style="cursor:pointer"></div>
+
+  <!-- Main content -->
+  <div class="w3-main">
+
+    <!-- Sidebar toggle button for mobile -->
+    <button class="openbtn w3-hide-large" id="flask" onclick="openSidebar()">☰ Contents</button>
+
+    <!-- Page Header -->
+    <header class="w3-container w3-padding-64 w3-center" id="flask">
+      <h1 class="w3-xxxlarge">Fullstack Flask Example - Burger Shop</h1>
+      <p class="w3-xlarge">From Database to Frontend with JS and Jinja Templates</p>
+    </header>
+
+    <!--Example Flask-->
+
+    <!-- 0. Project Structure -->
+    <div class="w3-container w3-white w3-padding-32 w3-margin">
+      <h2 id="structure">0️⃣ Project Structure → Files & Folders</h2>
+      <p>Before diving into code, here’s how the project is organized:</p>
+      <pre class="code-block">
+    <span class="folder">burger_shop/</span>
+    │
+    ├── <span class="folder">app/</span>
+    │   ├── __init__.py
+    │   ├── models.py          <span class="comment"># Database models (SQLAlchemy / Django ORM)</span>
+    │   ├── views.py           <span class="comment"># Routes / Views</span>
+    │   ├── templates/         <span class="comment"># HTML + Jinja/Django templates</span>
+    │   │   └── index.html
+    │   └── static/            <span class="comment"># CSS / JS files</span>
+    │       ├── css/
+    │       └── js/
+    │
+    ├── requirements.txt       <span class="comment"># Dependencies</span>
+    └── run.py / manage.py     <span class="comment"># Entry point</span>
+      </pre>
+      <p>This folder structure keeps models, routes, templates, and static files organized for a clean fullstack app.</p>
+    </div>
+
+    <!-- 1. Database -->
+    <div class="w3-container w3-white w3-padding-32 w3-margin">
+      <h2 id="database">1️⃣ Database → Models (Python / SQLAlchemy)</h2>
+      <p>We define the tables for burgers and cart items using SQLAlchemy:</p>
+      <pre class="code-block">
+        <span class="comment"># Python model for burgers</span>
+        <span class="keyword">class</span> <span class="class-name">Burger</span>(db.Model):
+        <span class="variable">id</span> = db.Column(db.Integer, <span class="keyword">primary_key</span>=True)
+        <span class="variable">name</span> = db.Column(db.String(120), <span class="keyword">nullable</span>=False)
+        <span class="variable">price</span> = db.Column(db.Numeric(6,2), <span class="keyword">nullable</span>=False)
+
+    <span class="keyword">def</span> <span class="func-name">to_dict</span>(self):
+        <span class="keyword">return</span> {
+            'id': self.id,
+            'name': self.name,
+            'price': <span class="keyword">float</span>(self.price)
+        }
+  </pre>
+      <p>Each row in the database can now be converted to JSON with <code>to_dict()</code>.</p>
+    </div>
+
+    <!-- 2. Flask Backend -->
+    <div class="w3-container w3-white w3-padding-32 w3-margin">
+      <h2 id="backend">2️⃣ Flask Backend → Routes / Blueprints</h2>
+      <p>Example route to return all burgers as JSON:</p>
+      <pre class="code-block">
+<span class="decorator">@bp.route</span>(''/burgers/api'', methods=[<span class="string">'GET'</span>])
+<span class="keyword">def</span> <span class="func-name">api_list</span>():
+    <span class="variable">burgers</span> = Burger.query.all()          <span class="comment"># Query all burgers from database</span>
+    <span class="keyword">return</span> jsonify([<span class="variable">b</span>.to_dict() for <span class="variable">b</span> in <span class="variable">burgers</span>])  <span class="comment"># Return as JSON</span>
+  </pre>
+      <p>Flask receives the GET request, queries the database, and sends JSON that JS can fetch.</p>
+    </div>
+
+    <!-- 3. JavaScript -->
+    <div class="w3-container w3-white w3-padding-32 w3-margin">
+      <h2 id="javascript">3️⃣ JavaScript → API Consumption</h2>
+      <p>Example function to add items to the cart:</p>
+      <pre class="code-block">
+<span class="keyword">async</span> <span class="keyword">function</span> <span class="func-name">addToCart</span>(<span class="param">burgerId</span>, <span class="param">qty</span> = <span class="number">1</span>) {
+  <span class="variable">const</span> <span class="variable">res</span> = <span class="keyword">await</span> fetch(<span class="string">'/cart/api'</span>, {
+    <span class="prop">method</span>: <span class="string">'POST'</span>,
+    <span class="prop">headers</span>: {<span class="string">'Content-Type'</span>: <span class="string">'application/json'</span>},
+    <span class="prop">body</span>: JSON.stringify({<span class="prop">burger_id</span>: <span class="variable">burgerId</span>, <span class="prop">quantity</span>: <span class="variable">qty</span>})
+  });
+  <span class="keyword">return</span> <span class="variable">res</span>.json();
+}
+  </pre>
+      <p>JS sends JSON data to the backend, which updates the cart and returns a JSON response.</p>
+    </div>
+
+
+    <!-- 4. HTML / Jinja -->
+    <div class="w3-container w3-white w3-padding-32 w3-margin">
+      <h2 id="jinja">4️⃣ HTML / Jinja → Initial Render</h2>
+      <p>Template example using Jinja to display burgers:</p>
+      <pre class="code-block">
+<span class="tag">&lt;ul</span> <span class="attr">id</span>=<span class="string">"catalog"</span><span class="tag">&gt;</span>
+  <span class="jinja">{% for b in burgers %}</span>
+    <span class="tag">&lt;li&gt;</span>
+      <span class="tag">&lt;strong&gt;</span><span class="variable">{{ b.name }}</span><span class="tag">&lt;/strong&gt;</span> — $<span class="variable">{{ '%.2f'|format(b.price) }}</span>
+      <span class="tag">&lt;button</span> <span class="attr">class</span>=<span class="string">"add-to-cart"</span> <span class="attr">data-id</span>=<span class="variable">{{ b.id }}</span><span class="tag">&gt;</span>Add<span class="tag">&lt;/button&gt;</span>
+    <span class="tag">&lt;/li&gt;</span>
+  <span class="jinja">{% endfor %}</span>
+<span class="tag">&lt;/ul&gt;</span>
+  </pre>
+      <p>Jinja renders HTML dynamically using data Flask passes from the database.</p>
+    </div>
+
+    <!-- 5. Testing Python & JS -->
+    <div class="w3-container w3-white w3-padding-32 w3-margin">
+      <h2 id="testing">5️⃣ Testing → Python & JS</h2>
+      <p>Example of testing Python model and JS function:</p>
+      <pre class="code-block">
+<span class="comment"># Python test for Burger model</span>
+<span class="keyword">def</span> <span class="func-name">test_burger_to_dict</span>():
+    <span class="variable">b</span> = Burger(name=<span class="string">'Cheese'</span>, price=<span class="number">5.99</span>)
+    <span class="keyword">assert</span> b.to_dict() == {'id': None, 'name': 'Cheese', 'price': 5.99}
+
+<span class="comment">// JS test for addToCart function</span>
+<span class="keyword">async</span> <span class="keyword">function</span> <span class="func-name">testAddToCart</span>() {
+  <span class="variable">res</span> = <span class="keyword">await</span> addToCart(1, 2);
+  <span class="keyword">console</span>.log(<span class="string">'Cart response:'</span>, <span class="variable">res</span>);
+}
+  </pre>
+    </div>
+<!-- 6. Complete Data Flow + Testing -->
+<div class="w3-container w3-white w3-padding-32 w3-margin">
+  <h2 id="flow">6️⃣ Complete Data Flow</h2>
+  <table class="w3-table w3-bordered w3-striped">
+    <tr>
+      <th>Layer</th>
+      <th>Example</th>
+      <th>Purpose</th>
+    </tr>
+    <tr>
+      <td>Database</td>
+      <td>burgers table</td>
+      <td>Stores burger items and cart entries</td>
+    </tr>
+    <tr>
+      <td>Python Models</td>
+      <td>Burger.query.all()</td>
+      <td>Queries database and returns objects</td>
+    </tr>
+    <tr>
+      <td>Flask Backend</td>
+      <td>/burgers/api</td>
+      <td>Handles JSON API & cart actions</td>
+    </tr>
+    <tr>
+      <td>Frontend JS</td>
+      <td>fetch('/cart/api')</td>
+      <td>Sends requests and updates UI dynamically</td>
+    </tr>
+    <tr>
+      <td>HTML / Jinja</td>
+      <td>{{ '{{ b.name }}' }}</td>
+      <td>Renders initial data and buttons</td>
+    </tr>
+    <tr>
+      <td>Testing</td>
+      <td>
+        Python: <code>test_burger_to_dict()</code><br>
+        JS: <code>testAddToCart()</code>
+      </td>
+      <td>Ensures backend and frontend logic works</td>
+    </tr>
+  </table>
+</div>
+
+</div>
+<script src="../../js/framework.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Fullstack Laravel Example - Burger Shop</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- W3.CSS Styles -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-teal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!--CSS Style-->
+    <link rel="stylesheet" href="../../css/frameworks.css">
+</head>
+
+<body class="w3-light-grey" id="laravel">
+
+    <!-- Sidebar / Table of Contents -->
+    <div class="laravel w3-sidebar w3-bar-block w3-large" id="mySidebar" style="width:300px;">
+        <h3 class="w3-bar-item">Contents</h3>
+        <a href="#structure" class="w3-bar-item w3-button">0. Project Structure</a>
+        <a href="#database" class="w3-bar-item w3-button">1. Database</a>
+        <a href="#backend" class="w3-bar-item w3-button">2. Laravel Controllers</a>
+        <a href="#javascript" class="w3-bar-item w3-button">3. JavaScript API</a>
+        <a href="#blade" class="w3-bar-item w3-button">4. Blade Templates</a>
+        <a href="#testing" class="w3-bar-item w3-button">5. Testing</a>
+        <a href="#flow" class="w3-bar-item w3-button">6. Complete Data Flow</a>
+        <h3 class="w3-bar-item">
+            <a href="../../index.html" class="w3-button" style="text-decoration:none; color:inherit;">Back</a>
+        </h3>
+    </div>
+
+    <!-- Overlay for mobile -->
+    <div class="w3-overlay w3-hide-large" onclick="closeSidebar()" id="myOverlay" style="cursor:pointer"></div>
+
+    <!-- Main content -->
+    <div class="w3-main">
+
+        <!-- Sidebar toggle button for mobile -->
+        <button class="openbtn w3-hide-large" id="laravel" onclick="openSidebar()">☰ Contents</button>
+
+        <!-- Page Header -->
+        <header class="w3-container w3-padding-64 w3-center" id="laravel">
+            <h1 class="w3-xxxlarge">Fullstack Laravel Example - Burger Shop</h1>
+            <p class="w3-xlarge">From Database to Frontend with JS and Blade Templates</p>
+        </header>
+
+        <!-- 0. Project Structure -->
+        <div class="w3-container w3-white w3-padding-32 w3-margin">
+            <h2 id="structure">0️⃣ Project Structure → Files & Folders</h2>
+            <pre class="code-block">
+<span class="folder">burger_shop/</span>                <span class="comment"># Laravel project root</span>
+│
+├── <span class="folder">app/</span>
+│   ├── Models/                <span class="comment"># Eloquent models (Burger, CartItem)</span>
+│   └── Http/Controllers/      <span class="comment"># Controllers for API & web</span>
+│
+├── <span class="folder">database/</span>
+│   └── migrations/            <span class="comment"># Database schema</span>
+│
+├── <span class="folder">resources/</span>
+│   ├── views/                 <span class="comment"># Blade templates (index.blade.php)</span>
+│   └── js/ css/               <span class="comment"># Frontend assets</span>
+│
+├── routes/
+│   ├── web.php                <span class="comment"># Routes for Blade views</span>
+│   └── api.php                <span class="comment"># Routes for JSON API</span>
+│
+├── public/                    <span class="comment"># Publicly accessible folder</span>
+├── artisan                    <span class="comment"># Laravel CLI</span>
+└── composer.json              <span class="comment"># PHP dependencies</span>
+            </pre>
+        </div>
+
+        <!-- 1. Database -->
+        <div class="w3-container w3-white w3-padding-32 w3-margin">
+            <h2 id="database">1️⃣ Database → Eloquent Models</h2>
+            <pre class="code-block">
+<span class="comment">// app/Models/Burger.php</span>
+<span class="keyword">namespace</span> App\Models;
+
+<span class="keyword">use</span> Illuminate\Database\Eloquent\Model;
+
+<span class="keyword">class</span> <span class="class-name">Burger</span> <span class="keyword">extends</span> Model {
+    <span class="keyword">protected</span> $fillable = ['name', 'price'];
+}
+            </pre>
+        </div>
+
+        <!-- 2. Laravel Backend -->
+        <div class="w3-container w3-white w3-padding-32 w3-margin">
+            <h2 id="backend">2️⃣ Laravel Controllers → JSON API</h2>
+            <pre class="code-block">
+<span class="comment">// app/Http/Controllers/BurgerController.php</span>
+<span class="keyword">namespace</span> App\Http\Controllers;
+
+<span class="keyword">use</span> App\Models\Burger;
+
+<span class="keyword">class</span> <span class="class-name">BurgerController</span> <span class="keyword">extends</span> Controller {
+    <span class="keyword">public function</span> index() {
+        <span class="keyword">return</span> response()->json(Burger::all());
+    }
+}
+            </pre>
+            <p>Add the route in <code>routes/api.php</code>:</p>
+            <pre class="code-block">
+<span class="keyword">use</span> App\Http\Controllers\BurgerController;
+
+Route::get('/burgers', [BurgerController::class, 'index']);
+            </pre>
+        </div>
+
+        <!-- 3. JavaScript -->
+        <div class="w3-container w3-white w3-padding-32 w3-margin">
+            <h2 id="javascript">3️⃣ JavaScript → API Consumption</h2>
+            <pre class="code-block">
+<span class="keyword">async function</span> <span class="func-name">addToCart</span>(<span class="param">burgerId</span>, <span class="param">qty</span> = 1) {
+  <span class="keyword">const</span> res = <span class="keyword">await</span> fetch(<span class="string">'/api/cart'</span>, {
+    method: <span class="string">'POST'</span>,
+    headers: {<span class="string">'Content-Type'</span>: <span class="string">'application/json'</span>},
+    body: JSON.stringify({burger_id: burgerId, quantity: qty})
+  });
+  <span class="keyword">return</span> res.json();
+}
+            </pre>
+        </div>
+
+        <!-- 4. Blade Templates -->
+        <div class="w3-container w3-white w3-padding-32 w3-margin">
+            <h2 id="blade">4️⃣ Blade Templates → Initial Render</h2>
+            <pre class="code-block">
+<span class="tag">&lt;ul</span> <span class="attr">id</span>=<span class="string">"catalog"</span><span class="tag">&gt;</span>
+  <span class="jinja">@foreach ($burgers as $b)</span>
+    <span class="tag">&lt;li&gt;</span>
+      <span class="tag">&lt;strong&gt;</span>{{ <span class="variable">$b-&gt;name</span> }}<span class="tag">&lt;/strong&gt;</span> — ${{ <span class="variable">$b-&gt;price</span> }}
+      <span class="tag">&lt;button</span> <span class="attr">class</span>=<span class="string">"add-to-cart"</span> <span class="attr">data-id</span>=<span class="variable">{{ $b-&gt;id }}</span><span class="tag">&gt;</span>Add<span class="tag">&lt;/button&gt;</span>
+    <span class="tag">&lt;/li&gt;</span>
+  <span class="jinja">@endforeach</span>
+<span class="tag">&lt;/ul&gt;</span>
+            </pre>
+        </div>
+
+       <!-- 5. Testing -->
+<div class="w3-container w3-white w3-padding-32 w3-margin">
+  <h2 id="testing">5️⃣ Testing → PHP & JS</h2>
+  <pre class="code-block">
+<span class="comment">// PHPUnit test for Burger model</span>
+<span class="keyword">public function</span> <span class="func-name">testBurgerModel</span>() {
+    <span class="variable">$burger</span> = <span class="keyword">new</span> <span class="class-name">Burger</span>([<span class="string">'name'</span> =&gt; <span class="string">'Cheese'</span>, <span class="string">'price'</span> =&gt; <span class="number">5.99</span>]);
+    <span class="variable">$this</span>-&gt;<span class="func-name">assertEquals</span>(<span class="string">'Cheese'</span>, <span class="variable">$burger</span>-&gt;<span class="variable">name</span>);
+}
+
+<span class="comment">// JS test</span>
+<span class="keyword">async function</span> <span class="func-name">testAddToCart</span>() {
+  <span class="variable">const</span> <span class="variable">res</span> = <span class="keyword">await</span> addToCart(<span class="number">1</span>, <span class="number">2</span>);
+  <span class="keyword">console</span>.log(<span class="string">'Cart response:'</span>, <span class="variable">res</span>);
+}
+  </pre>
+</div>
+
+        <!-- 6. Complete Data Flow -->
+        <div class="w3-container w3-white w3-padding-32 w3-margin">
+            <h2 id="flow">6️⃣ Complete Data Flow</h2>
+            <table class="w3-table w3-bordered w3-striped">
+                <tr>
+                    <th>Layer</th>
+                    <th>Example</th>
+                    <th>Purpose</th>
+                </tr>
+                <tr>
+                    <td>Database</td>
+                    <td>burgers table</td>
+                    <td>Stores burger items</td>
+                </tr>
+                <tr>
+                    <td>Eloquent Models</td>
+                    <td>Burger::all()</td>
+                    <td>ORM to query database</td>
+                </tr>
+                <tr>
+                    <td>Controllers</td>
+                    <td>/api/burgers</td>
+                    <td>Returns JSON or processes cart actions</td>
+                </tr>
+                <tr>
+                    <td>Frontend JS</td>
+                    <td>fetch('/api/cart')</td>
+                    <td>Sends/receives JSON and updates UI</td>
+                </tr>
+                <tr>
+                    <td>Blade Templates</td>
+                    <td>{{ '{{ $b->name }}' }}</td>
+                    <td>Renders initial list of burgers</td>
+                </tr>
+                <tr>
+                    <td>Testing</td>
+                    <td>PHPUnit + JS console tests</td>
+                    <td>Ensures backend and frontend logic works</td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+    <script src="../../js/framework.js"></script>
+</body>
+</html>

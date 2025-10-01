@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Fullstack .NET Example - Burger Shop</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <!-- W3.CSS -->
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-teal.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <!-- Your syntax CSS -->
+  <link rel="stylesheet" href="../../css/frameworks.css">
+</head>
+<body class="w3-light-grey" id="dotnet">
+
+  <!-- Sidebar / Table of Contents -->
+  <div class="dotnet w3-sidebar w3-bar-block w3-large" id="mySidebar" style="width:300px;">
+    <h3 class="w3-bar-item">Contents</h3>
+    <a href="#structure" class="w3-bar-item w3-button">0. Project Structure</a>
+    <a href="#database" class="w3-bar-item w3-button">1. Database / Models</a>
+    <a href="#backend" class="w3-bar-item w3-button">2. Controllers → JSON API</a>
+    <a href="#javascript" class="w3-bar-item w3-button">3. JavaScript API</a>
+    <a href="#razor" class="w3-bar-item w3-button">4. Razor View</a>
+    <a href="#testing" class="w3-bar-item w3-button">5. Testing</a>
+    <a href="#flow" class="w3-bar-item w3-button">6. Complete Data Flow</a>
+    <h3 class="w3-bar-item">
+      <a href="../../index.html" class="w3-button" style="text-decoration:none; color:inherit;">Back</a>
+    </h3>
+  </div>
+
+  <!-- Overlay for mobile -->
+  <div class="w3-overlay w3-hide-large" onclick="closeSidebar()" id="myOverlay" style="cursor:pointer"></div>
+
+  <!-- Main content -->
+  <div class="w3-main">
+
+    <!-- Sidebar toggle for mobile -->
+    <button class="openbtn w3-hide-large" id="dotnet" onclick="openSidebar()">☰ Contents</button>
+
+    <!-- Header -->
+    <header class="w3-container w3-padding-64 w3-center" id="dotnet">
+      <h1 class="w3-xxxlarge">Fullstack .NET Example - Burger Shop</h1>
+      <p class="w3-xlarge">From Database to Frontend with JS and Razor Views (ASP.NET Core)</p>
+    </header>
+
+    <!-- 0. Project Structure -->
+    <div class="w3-container w3-white w3-padding-32 w3-margin">
+      <h2 id="structure">0️⃣ Project Structure → Files & Folders</h2>
+      <pre class="code-block">
+<span class="folder">BurgerShop/</span>                    <span class="comment">// Solution / project root</span>
+│
+├── <span class="folder">BurgerShop/</span>                <span class="comment">// ASP.NET Core web project</span>
+│   ├── <span class="folder">Controllers/</span>          <span class="comment">// Controllers (API & MVC)</span>
+│   ├── <span class="folder">Models/</span>               <span class="comment">// C# models (Burger, CartItem)</span>
+│   ├── <span class="folder">Views/</span>                <span class="comment">// Razor views (.cshtml)</span>
+│   │   └── <span class="folder">Home/</span>
+│   │       └── <span class="file">Index.cshtml</span>
+│   ├── <span class="folder">wwwroot/</span>             <span class="comment">// static files: css, js, images</span>
+│   ├── <span class="file">Program.cs</span>            <span class="comment">// Host & configure</span>
+│   └── <span class="file">Startup.cs</span>            <span class="comment">// Middleware, endpoints (if present)</span>
+│
+├── <span class="folder">tests/</span>                    <span class="comment">// xUnit / integration tests</span>
+├── <span class="file">appsettings.json</span>           <span class="comment">// DB connection</span>
+└── <span class="file">BurgerShop.sln</span>             <span class="comment">// Solution file</span>
+      </pre>
+      <p>Use EF Core migrations to keep the DB schema in sync (or configure PostgreSQL / SQL Server in <code>appsettings.json</code>).</p>
+    </div>
+
+    <!-- 1. Database / Models -->
+    <div class="w3-container w3-white w3-padding-32 w3-margin">
+      <h2 id="database">1️⃣ Database → Models (C# / EF Core)</h2>
+      <p>Define the Burger entity (EF Core):</p>
+      <pre class="code-block">
+<span class="comment">// Models/Burger.cs</span>
+<span class="keyword">using</span> System.ComponentModel.DataAnnotations;
+
+<span class="keyword">namespace</span> BurgerShop.Models
+{
+    <span class="keyword">public class</span> <span class="class-name">Burger</span>
+    {
+        <span class="keyword">public int</span> <span class="variable">Id</span> { get; <span class="keyword">set</span>; }
+        <span class="keyword">[Required]</span>
+        <span class="keyword">public string</span> <span class="variable">Name</span> { get; <span class="keyword">set</span>; }
+        <span class="keyword">public decimal</span> <span class="variable">Price</span> { get; <span class="keyword">set</span>; }
+
+        <span class="keyword">public object</span> <span class="func-name">ToDto</span>() =&gt; new { <span class="string">"id"</span> = Id, <span class="string">"name"</span> = Name, <span class="string">"price"</span> = Price };
+    }
+}
+      </pre>
+      <p>Use EF Core <code>DbContext</code> to map models to your PostgreSQL (or other) database.</p>
+    </div>
+
+    <!-- 2. Controllers (API) -->
+    <div class="w3-container w3-white w3-padding-32 w3-margin">
+      <h2 id="backend">2️⃣ Controllers → JSON API (ASP.NET Core)</h2>
+      <p>Example API controller returning burgers as JSON (attribute routing):</p>
+      <pre class="code-block">
+<span class="comment">// Controllers/BurgersController.cs</span>
+<span class="keyword">using</span> Microsoft.AspNetCore.Mvc;
+<span class="keyword">using</span> BurgerShop.Models;
+
+<span class="keyword">namespace</span> BurgerShop.Controllers
+{
+    <span class="decorator">[ApiController]</span>
+    <span class="decorator">[Route]</span>(<span class="string">"api/[controller]"</span>)
+    <span class="keyword">public class</span> <span class="class-name">BurgersController</span> : ControllerBase
+    {
+        <span class="keyword">private readonly</span> AppDbContext _context;
+
+        <span class="keyword">public</span> <span class="class-name">BurgersController</span>(AppDbContext context) {
+            _context = context;
+        }
+
+        <span class="decorator">[HttpGet]</span>
+        <span class="keyword">public async Task&lt;IActionResult&gt;</span> <span class="func-name">GetAll</span>() {
+            <span class="keyword">var</span> burgers = await _context.Burgers.ToListAsync();
+            <span class="keyword">return</span> Ok(burgers.Select(b =&gt; b.ToDto()));
+        }
+    }
+}
+      </pre>
+
+      <p>Alternatively, register MVC endpoints in <code>Program.cs</code> or <code>Startup.cs</code> (MapControllers / UseEndpoints).</p>
+      <pre class="code-block">
+<span class="comment">// Program.cs (minimal example)</span>
+<span class="keyword">var</span> builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext&lt;AppDbContext&gt;(options =&gt; /* configure provider */);
+builder.Services.AddControllers();
+<span class="keyword">var</span> app = builder.Build();
+app.MapControllers();
+app.Run();
+      </pre>
+    </div>
+
+    <!-- 3. JavaScript -->
+    <div class="w3-container w3-white w3-padding-32 w3-margin">
+      <h2 id="javascript">3️⃣ JavaScript → API Consumption</h2>
+      <p>Client-side function to post cart items to the .NET API:</p>
+      <pre class="code-block">
+<span class="keyword">async function</span> <span class="func-name">addToCart</span>(<span class="param">burgerId</span>, <span class="param">qty</span> = <span class="number">1</span>) {
+  <span class="keyword">const</span> res = <span class="keyword">await</span> fetch(<span class="string">'/api/cart'</span>, {
+    method: <span class="string">'POST'</span>,
+    headers: { <span class="string">'Content-Type'</span>: <span class="string">'application/json'</span> },
+    body: JSON.stringify({ burgerId, quantity: qty })
+  });
+  <span class="keyword">return</span> res.json();
+}
+      </pre>
+      <p>This JS <code>fetch</code> hits an ASP.NET Core controller action that processes the cart (create/update/delete).</p>
+    </div>
+
+    <!-- 4. Razor View -->
+    <div class="w3-container w3-white w3-padding-32 w3-margin">
+      <h2 id="razor">4️⃣ Razor View → Initial Render</h2>
+      <p>Example Razor (.cshtml) to render burgers server-side and provide buttons for JS:</p>
+      <pre class="code-block">
+<span class="tag">@model</span> <span class="string">IEnumerable&lt;BurgerShop.Models.Burger&gt;</span>
+
+<span class="tag">&lt;ul</span> <span class="attr">id</span>=<span class="string">"catalog"</span><span class="tag">&gt;</span>
+  <span class="blade">@foreach</span> (var b in Model) {
+    <span class="tag">&lt;li&gt;</span>
+      <span class="tag">&lt;strong&gt;</span>@<span class="variable">b.Name</span><span class="tag">&lt;/strong&gt;</span> — $@<span class="variable">b.Price</span>
+      <span class="tag">&lt;button</span> <span class="attr">class</span>=<span class="string">"add-to-cart"</span> <span class="attr">data-id</span>=<span class="variable">@b.Id</span><span class="tag">&gt;</span>Add<span class="tag">&lt;/button&gt;</span>
+    <span class="tag">&lt;/li&gt;</span>
+  }
+<span class="tag">&lt;/ul&gt;</span>
+      </pre>
+      <p>Razor binds C# model properties into the HTML and the same JS handlers work to call the API.</p>
+    </div>
+
+    <!-- 5. Testing -->
+    <div class="w3-container w3-white w3-padding-32 w3-margin">
+      <h2 id="testing">5️⃣ Testing → .NET (xUnit) & JS</h2>
+      <p>Examples: unit test for model / controller and a JS test snippet.</p>
+      <pre class="code-block">
+<span class="comment">// tests/ModelTests.cs (xUnit)</span>
+<span class="keyword">using</span> Xunit;
+<span class="keyword">using</span> BurgerShop.Models;
+
+<span class="keyword">public class</span> <span class="class-name">ModelTests</span>
+{
+    <span class="decorator">[Fact]</span>
+    <span class="keyword">public void</span> <span class="func-name">Burger_ToDto_Works</span>()
+    {
+        <span class="keyword">var</span> b = <span class="keyword">new</span> <span class="class-name">Burger</span> { Name = <span class="string">"Cheese"</span>, Price = <span class="number">5.99m</span> };
+        <span class="keyword">var</span> dto = b.ToDto();
+        <span class="keyword">Assert</span>.Equal(<span class="string">"Cheese"</span>, ((dynamic)dto).name);
+    }
+}
+
+<span class="comment">// JS test (simple console / ad-hoc)</span>
+<span class="keyword">async function</span> <span class="func-name">testAddToCart</span>() {
+  <span class="keyword">const</span> res = <span class="keyword">await</span> addToCart(<span class="number">1</span>, <span class="number">2</span>);
+  <span class="keyword">console</span>.log(<span class="string">'Cart response:'</span>, res);
+}
+      </pre>
+      <p>For integration tests use <code>WebApplicationFactory</code> and EF Core InMemory provider or testcontainers for DB.</p>
+    </div>
+
+    <!-- 6. Complete Data Flow + Testing -->
+    <div class="w3-container w3-white w3-padding-32 w3-margin">
+      <h2 id="flow">6️⃣ Complete Data Flow</h2>
+      <table class="w3-table w3-bordered w3-striped">
+        <tr><th>Layer</th><th>Example</th><th>Purpose</th></tr>
+        <tr><td>Database</td><td>EF Core migrations</td><td>Schema + seed data</td></tr>
+        <tr><td>C# Models</td><td>Burger class</td><td>Map DB rows to C# objects</td></tr>
+        <tr><td>Controllers</td><td>/api/burgers → BurgersController.GetAll()</td><td>Return JSON, handle cart mutations</td></tr>
+        <tr><td>Frontend JS</td><td>fetch('/api/cart')</td><td>Send/receive JSON; dynamic UI</td></tr>
+        <tr><td>Razor Views</td><td>Index.cshtml</td><td>Server-render initial page and data</td></tr>
+        <tr><td>Testing</td><td>xUnit + JS console tests</td><td>Unit + integration tests</td></tr>
+      </table>
+    </div>
+
+  </div>
+
+  <script>
+    function openSidebar(){
+      document.getElementById("mySidebar").style.display="block";
+      document.getElementById("myOverlay").style.display="block";
+    }
+    function closeSidebar(){
+      document.getElementById("mySidebar").style.display="none";
+      document.getElementById("myOverlay").style.display="none";
+    }
+  </script>
+
+  <script src="../../js/framework.js"></script>
+</body>
+</html>

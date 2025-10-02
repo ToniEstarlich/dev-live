@@ -13,6 +13,7 @@
 
   <!--CSS Style-->
   <link rel="stylesheet" href="../../css/frameworks.css">
+  <link rel="stylesheet" href="../../css/table.css">
 
 </head>
 
@@ -160,53 +161,57 @@
 }
   </pre>
     </div>
-<!-- 6. Complete Data Flow + Testing -->
+
+    <!-- 6. Complete Data Flow + Testing -->
 <div class="w3-container w3-white w3-padding-32 w3-margin">
-  <h2 id="flow">6️⃣ Complete Data Flow</h2>
-  <table class="w3-table w3-bordered w3-striped">
-    <tr>
-      <th>Layer</th>
-      <th>Example</th>
-      <th>Purpose</th>
-    </tr>
-    <tr>
-      <td>Database</td>
-      <td>burgers table</td>
-      <td>Stores burger items and cart entries</td>
-    </tr>
-    <tr>
-      <td>Python Models</td>
-      <td>Burger.query.all()</td>
-      <td>Queries database and returns objects</td>
-    </tr>
-    <tr>
-      <td>Flask Backend</td>
-      <td>/burgers/api</td>
-      <td>Handles JSON API & cart actions</td>
-    </tr>
-    <tr>
-      <td>Frontend JS</td>
-      <td>fetch('/cart/api')</td>
-      <td>Sends requests and updates UI dynamically</td>
-    </tr>
-    <tr>
-      <td>HTML / Jinja</td>
-      <td>{{ '{{ b.name }}' }}</td>
-      <td>Renders initial data and buttons</td>
-    </tr>
-    <tr>
-      <td>Testing</td>
-      <td>
-        Python: <code>test_burger_to_dict()</code><br>
-        JS: <code>testAddToCart()</code>
-      </td>
-      <td>Ensures backend and frontend logic works</td>
-    </tr>
-  </table>
-</div>
+    <h2 id="flow">6️⃣ Complete Data Flow</h2>
+    <table class="w3-table w3-bordered w3-striped">
+      <thead>
+        <tr>
+          <th>Layer</th>
+          <th>Example</th>
+          <th>Purpose</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td data-label="Layer">Database</td>
+          <td data-label="Example">burgers table</td>
+          <td data-label="Purpose">Stores burger items and cart entries</td>
+        </tr>
+        <tr>
+          <td data-label="Layer">Python Models</td>
+          <td data-label="Example">Burger.query.all()</td>
+          <td data-label="Purpose">Queries database and returns objects</td>
+        </tr>
+        <tr>
+          <td data-label="Layer">Flask Backend</td>
+          <td data-label="Example">/burgers/api</td>
+          <td data-label="Purpose">Handles JSON API & cart actions</td>
+        </tr>
+        <tr>
+          <td data-label="Layer">Frontend JS</td>
+          <td data-label="Example">fetch('/cart/api')</td>
+          <td data-label="Purpose">Sends requests and updates UI dynamically</td>
+        </tr>
+        <tr>
+          <td data-label="Layer">HTML / Jinja</td>
+          <td data-label="Example">{{ '{{ b.name }}' }}</td>
+          <td data-label="Purpose">Renders initial data and buttons</td>
+        </tr>
+        <tr>
+          <td data-label="Layer">Testing</td>
+          <td data-label="Example">
+            Python: <code>test_burger_to_dict()</code><br>
+            JS: <code>testAddToCart()</code>
+          </td>
+          <td data-label="Purpose">Ensures backend and frontend logic works</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 
-</div>
 <script src="../../js/framework.js"></script>
-</body>
 
+</body>
 </html>

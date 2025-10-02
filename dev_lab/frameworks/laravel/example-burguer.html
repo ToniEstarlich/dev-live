@@ -13,6 +13,7 @@
 
     <!--CSS Style-->
     <link rel="stylesheet" href="../../css/frameworks.css">
+    <link rel="stylesheet" href="../../css/table.css">
 </head>
 
 <body class="w3-light-grey" id="laravel">
@@ -160,49 +161,54 @@ Route::get('/burgers', [BurgerController::class, 'index']);
   </pre>
 </div>
 
-        <!-- 6. Complete Data Flow -->
-        <div class="w3-container w3-white w3-padding-32 w3-margin">
-            <h2 id="flow">6️⃣ Complete Data Flow</h2>
-            <table class="w3-table w3-bordered w3-striped">
+    <!-- 6. Complete Data Flow -->
+    <div class="w3-container w3-white w3-padding-32 w3-margin">
+        <h2 id="flow">6️⃣ Complete Data Flow</h2>
+        <table class="w3-table w3-bordered w3-striped">
+            <thead>
                 <tr>
                     <th>Layer</th>
                     <th>Example</th>
                     <th>Purpose</th>
                 </tr>
+            </thead>
+            <tbody>
                 <tr>
-                    <td>Database</td>
-                    <td>burgers table</td>
-                    <td>Stores burger items</td>
+                    <td data-label="Layer">Database</td>
+                    <td data-label="Example">burgers table</td>
+                    <td data-label="Purpose">Stores burger items</td>
                 </tr>
                 <tr>
-                    <td>Eloquent Models</td>
-                    <td>Burger::all()</td>
-                    <td>ORM to query database</td>
+                    <td data-label="Layer">Eloquent Models</td>
+                    <td data-label="Example">Burger::all()</td>
+                    <td data-label="Purpose">ORM to query database</td>
                 </tr>
                 <tr>
-                    <td>Controllers</td>
-                    <td>/api/burgers</td>
-                    <td>Returns JSON or processes cart actions</td>
+                    <td data-label="Layer">Controllers</td>
+                    <td data-label="Example">/api/burgers</td>
+                    <td data-label="Purpose">Returns JSON or processes cart actions</td>
                 </tr>
                 <tr>
-                    <td>Frontend JS</td>
-                    <td>fetch('/api/cart')</td>
-                    <td>Sends/receives JSON and updates UI</td>
+                    <td data-label="Layer">Frontend JS</td>
+                    <td data-label="Example">fetch('/api/cart')</td>
+                    <td data-label="Purpose">Sends/receives JSON and updates UI</td>
                 </tr>
                 <tr>
-                    <td>Blade Templates</td>
-                    <td>{{ '{{ $b->name }}' }}</td>
-                    <td>Renders initial list of burgers</td>
+                    <td data-label="Layer">Blade Templates</td>
+                    <td data-label="Example">{{ '{{ $b->name }}' }}</td>
+                    <td data-label="Purpose">Renders initial list of burgers</td>
                 </tr>
                 <tr>
-                    <td>Testing</td>
-                    <td>PHPUnit + JS console tests</td>
-                    <td>Ensures backend and frontend logic works</td>
+                    <td data-label="Layer">Testing</td>
+                    <td data-label="Example">PHPUnit + JS console tests</td>
+                    <td data-label="Purpose">Ensures backend and frontend logic works</td>
                 </tr>
-            </table>
-        </div>
-
+            </tbody>
+        </table>
+    </div>
+    
     </div>
     <script src="../../js/framework.js"></script>
-</body>
-</html>
+    </body>
+    
+    </html>

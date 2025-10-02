@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <!-- Your syntax CSS -->
   <link rel="stylesheet" href="../../css/frameworks.css">
+  <link rel="stylesheet" href="../../css/table.css">
 </head>
 
 <body class="w3-light-grey" id="react">
@@ -213,17 +214,46 @@ test(<span class="string">'renders list'</span>, () =&gt; {
     </div>
 
     <!-- 5. Complete Data Flow -->
-    <div class="w3-container w3-white w3-padding-32 w3-margin">
-      <h2 id="flow">5️⃣ Complete Data Flow</h2>
-      <table class="w3-table w3-bordered w3-striped">
-        <tr><th>Layer</th><th>Example</th><th>Purpose</th></tr>
-        <tr><td>Database</td><td>Postgres (Sequelize)</td><td>Store burgers, cart rows</td></tr>
-        <tr><td>Backend</td><td>Express routes</td><td>JSON API for CRUD</td></tr>
-        <tr><td>React Frontend</td><td>App.jsx, BurgerList.jsx</td><td>Render initial UI, call API</td></tr>
-        <tr><td>Testing</td><td>Jest / RTL / Supertest</td><td>Unit & integration tests</td></tr>
-        <tr><td>Dev flow</td><td>npm run dev / proxy</td><td>Local dev with hot reload</td></tr>
-      </table>
-    </div>
+<div class="w3-container w3-white w3-padding-32 w3-margin">
+  <h2 id="flow">5️⃣ Complete Data Flow</h2>
+  <table class="w3-table w3-bordered w3-striped">
+    <thead>
+      <tr>
+        <th>Layer</th>
+        <th>Example</th>
+        <th>Purpose</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td data-label="Layer">Database</td>
+        <td data-label="Example">Postgres (Sequelize)</td>
+        <td data-label="Purpose">Store burgers, cart rows</td>
+      </tr>
+      <tr>
+        <td data-label="Layer">Backend</td>
+        <td data-label="Example">Express routes</td>
+        <td data-label="Purpose">JSON API for CRUD</td>
+      </tr>
+      <tr>
+        <td data-label="Layer">React Frontend</td>
+        <td data-label="Example">App.jsx, BurgerList.jsx</td>
+        <td data-label="Purpose">Render initial UI, call API</td>
+      </tr>
+      <tr>
+        <td data-label="Layer">Testing</td>
+        <td data-label="Example">Jest / RTL / Supertest</td>
+        <td data-label="Purpose">Unit & integration tests</td>
+      </tr>
+      <tr>
+        <td data-label="Layer">Dev flow</td>
+        <td data-label="Example">npm run dev / proxy</td>
+        <td data-label="Purpose">Local dev with hot reload</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 
   </div>
 

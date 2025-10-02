@@ -1,0 +1,66 @@
+ h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    /* Base table styles */
+    .w3-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .w3-table th, .w3-table td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+
+    .w3-table th {
+      background: #2c3e50;
+      color: #fff;
+    }
+
+    /* Responsive: cards under 768px */
+    @media (max-width: 768px) {
+      .w3-table, .w3-table thead, .w3-table tbody, .w3-table th, .w3-table td, .w3-table tr {
+        display: block;
+        width: 100%;
+      }
+
+      .w3-table thead {
+        display: none; /* hide headers */
+      }
+
+      .w3-table tr {
+        margin: 0 0 1rem 0;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        padding: 12px;
+      }
+
+      .w3-table td {
+        display: block;
+        justify-content: space-between;
+        padding: 6px 8px;
+        border: none;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+      }
+
+      .w3-table td:last-child {
+        border-bottom: none;
+      }
+
+      .w3-table td::before {
+        content: attr(data-label);
+        flex: 0 0 40%;
+        font-weight: 600;
+        color: #444;
+        padding-right: 10px;
+      }
+
+      .w3-table td code {
+        white-space: normal;
+        display: inline-block;
+      }
+    }

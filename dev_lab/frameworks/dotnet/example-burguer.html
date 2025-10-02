@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   <!-- Your syntax CSS -->
   <link rel="stylesheet" href="../../css/frameworks.css">
+  <link rel="stylesheet" href="../../css/table.css">
 </head>
 <body class="w3-light-grey" id="dotnet">
 
@@ -202,29 +203,63 @@ app.Run();
     <div class="w3-container w3-white w3-padding-32 w3-margin">
       <h2 id="flow">6️⃣ Complete Data Flow</h2>
       <table class="w3-table w3-bordered w3-striped">
-        <tr><th>Layer</th><th>Example</th><th>Purpose</th></tr>
-        <tr><td>Database</td><td>EF Core migrations</td><td>Schema + seed data</td></tr>
-        <tr><td>C# Models</td><td>Burger class</td><td>Map DB rows to C# objects</td></tr>
-        <tr><td>Controllers</td><td>/api/burgers → BurgersController.GetAll()</td><td>Return JSON, handle cart mutations</td></tr>
-        <tr><td>Frontend JS</td><td>fetch('/api/cart')</td><td>Send/receive JSON; dynamic UI</td></tr>
-        <tr><td>Razor Views</td><td>Index.cshtml</td><td>Server-render initial page and data</td></tr>
-        <tr><td>Testing</td><td>xUnit + JS console tests</td><td>Unit + integration tests</td></tr>
+        <thead>
+          <tr>
+            <th>Layer</th>
+            <th>Example</th>
+            <th>Purpose</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-label="Layer">Database</td>
+            <td data-label="Example">EF Core migrations</td>
+            <td data-label="Purpose">Schema + seed data</td>
+          </tr>
+          <tr>
+            <td data-label="Layer">C# Models</td>
+            <td data-label="Example">Burger class</td>
+            <td data-label="Purpose">Map DB rows to C# objects</td>
+          </tr>
+          <tr>
+            <td data-label="Layer">Controllers</td>
+            <td data-label="Example">/api/burgers → BurgersController.GetAll()</td>
+            <td data-label="Purpose">Return JSON, handle cart mutations</td>
+          </tr>
+          <tr>
+            <td data-label="Layer">Frontend JS</td>
+            <td data-label="Example">fetch('/api/cart')</td>
+            <td data-label="Purpose">Send/receive JSON; dynamic UI</td>
+          </tr>
+          <tr>
+            <td data-label="Layer">Razor Views</td>
+            <td data-label="Example">Index.cshtml</td>
+            <td data-label="Purpose">Server-render initial page and data</td>
+          </tr>
+          <tr>
+            <td data-label="Layer">Testing</td>
+            <td data-label="Example">xUnit + JS console tests</td>
+            <td data-label="Purpose">Unit + integration tests</td>
+          </tr>
+        </tbody>
       </table>
     </div>
-
-  </div>
-
-  <script>
-    function openSidebar(){
-      document.getElementById("mySidebar").style.display="block";
-      document.getElementById("myOverlay").style.display="block";
-    }
-    function closeSidebar(){
-      document.getElementById("mySidebar").style.display="none";
-      document.getElementById("myOverlay").style.display="none";
-    }
-  </script>
-
-  <script src="../../js/framework.js"></script>
-</body>
-</html>
+    
+    
+    </div>
+    
+    <script>
+      function openSidebar() {
+        document.getElementById("mySidebar").style.display = "block";
+        document.getElementById("myOverlay").style.display = "block";
+      }
+      function closeSidebar() {
+        document.getElementById("mySidebar").style.display = "none";
+        document.getElementById("myOverlay").style.display = "none";
+      }
+    </script>
+    
+    <script src="../../js/framework.js"></script>
+    </body>
+    
+    </html>

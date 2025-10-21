@@ -34,6 +34,13 @@ body {
     color: white;
 }
 
+.dj-rn,
+#dj-rn {
+    background-color: #0A7397;
+    color: white;
+}
+
+
 /* Code block styling */
 pre.code-block {
     background-color: #1e1e1e;

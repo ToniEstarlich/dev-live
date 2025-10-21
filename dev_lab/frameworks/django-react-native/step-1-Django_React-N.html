@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Fullstack Django + React Native Guide</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- W3.CSS Styles -->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/5/w3.css">
+    <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-teal.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../../css/frameworks.css">
+    <link rel="stylesheet" href="../../css/table.css">
+</head>
+
+<body class="w3-light-grey" id="django">
+
+    <!-- Sidebar / Table of Contents -->
+    <div class="dj-rn w3-sidebar w3-bar-block w3-large" id="mySidebar" style="width:300px;">
+        <h3 class="w3-bar-item">Contents</h3>
+        <img src="https://static.djangoproject.com/img/logos/django-logo-negative.svg" alt="Django logo" width="40" style="margin-left: 8px;">
+        +
+        <img src="https://reactnative.dev/img/header_logo.svg" alt="React Native logo" width="30">
+        <a href="#overview" class="w3-bar-item w3-button">Overview / Diagram</a>
+        <a href="#prereqs" class="w3-bar-item w3-button">Prerequisites</a>
+        <a href="#backend" class="w3-bar-item w3-button">A — Django Backend</a>
+        <a href="#frontend" class="w3-bar-item w3-button">B — React Native Frontend</a>
+        <a href="#validation" class="w3-bar-item w3-button">C — Final Checks</a>
+        <a href="#commands" class="w3-bar-item w3-button">Essential Commands</a>
+        <h3 class="w3-bar-item">
+            <a href="../../index.html" class="w3-button" style="text-decoration:none; color:inherit;">Back</a>
+        </h3>
+    </div>
+
+    <!-- Overlay for mobile -->
+    <div class="w3-overlay w3-hide-large" onclick="closeSidebar()" id="myOverlay" style="cursor:pointer"></div>
+
+    <!-- Main content -->
+    <div class="w3-main">
+
+        <!-- Sidebar toggle button for mobile -->
+        <button class="openbtn w3-hide-large" id="dj-rn" onclick="openSidebar()">☰ Contents</button>
+
+        <!-- Page Header -->
+        <header class="w3-container w3-padding-64 w3-center" id="dj-rn">
+            <h1 class="w3-xxxlarge">Fullstack Django + React Native Guide</h1>
+            <p class="w3-xlarge">From Django Backend to React Native Frontend — Study Guide & Working Example</p>
+        </header>
+
+        <!-- Overview / Diagram -->
+        <div class="w3-container w3-white w3-padding-32 w3-margin">
+            <h2 id="overview">Overview → Architecture Diagram</h2>
+            <p>High-level flow between backend and frontend:</p>
+            <pre class="code-block">
+<span class="comment">[ Django Backend ]</span>
+<span class="tag">+--------------------------</span>
+<span class="tag">| models.py               |</span>
+<span class="tag">|  class User(models.Model)|</span>
+<span class="tag">|      username, email    |</span>
+<span class="tag">+--------------------------</span>
+           |
+           v
+<span class="tag">+--------------------------</span>
+<span class="tag">| serializers.py           |</span>
+<span class="tag">|  class UserSerializer    |</span>
+<span class="tag">|  -> fields: id, username |</span>
+<span class="tag">|     email               |</span>
+<span class="tag">+--------------------------</span>
+           |
+           v
+<span class="tag">+--------------------------</span>
+<span class="tag">| views.py                 |</span>
+<span class="tag">|  @api_view('GET')        |</span>
+<span class="tag">|  list_users() -> JSON    |</span>
+<span class="tag">+--------------------------</span>
+           |
+           v
+<span class="comment">[ /users/ API endpoint ] ---> JSON:</span>
+<span class="string">[
+  { id:1, username:"Alice", email:"a@a.com"},
+  { id:2, username:"Bob", email:"b@b.com"}
+]</span>
+
+           |
+           v
+<span class="comment">[ React Native Frontend ]</span>
+<span class="tag">+--------------------------</span>
+<span class="tag">| types.ts                 |</span>
+<span class="tag">|  interface User {        |</span>
+<span class="tag">|    id: number            |</span>
+<span class="tag">|    username: string      |</span>
+<span class="tag">|    email: string         |</span>
+<span class="tag">|  }                       |</span>
+<span class="tag">+--------------------------</span>
+           |
+           v
+<span class="tag">+--------------------------</span>
+<span class="tag">| api.ts                   |</span>
+<span class="tag">|  async getUsers(): User[]|</span>
+<span class="tag">|  fetch('http://.../users')|</span>
+<span class="tag">+--------------------------</span>
+           |
+           v
+<span class="tag">+--------------------------</span>
+<span class="tag">| App.tsx                  |</span>
+<span class="tag">|  useEffect(fetchUsers)   |</span>
+<span class="tag">|  setUsers(users)         |</span>
+<span class="tag">|  &lt;FlatList               |</span>
+<span class="tag">|     data={users}         |</span>
+<span class="tag">|     renderItem={({item})=&gt;|</span>
+<span class="tag">|         &lt;Text&gt;{item.username}&lt;/Text&gt;}|</span>
+<span class="tag">|  /&gt;                       |</span>
+<span class="tag">+--------------------------</span>
+            </pre>
+        </div>
+
+        <!-- Prerequisites -->
+        <div class="w3-container w3-white w3-padding-32 w3-margin">
+            <h2 id="prereqs">Prerequisites</h2>
+            <ul>
+                <li>Python 3.10+</li>
+                <li>Node 18+ and npm or Yarn</li>
+                <li>Expo CLI (recommended for React Native + TypeScript)</li>
+                <li>Git (optional)</li>
+            </ul>
+            <pre class="code-block">
+<span class="comment"># Python & pip: usually come with Python</span>
+<span class="comment"># Node / npm: install from nodejs.org</span>
+
+<span class="comment"># Install Expo CLI globally</span>
+<span class="keyword">npm</span> install -g expo-cli
+<span class="comment"># or with Yarn</span>
+<span class="keyword">yarn</span> global add expo-cli
+            </pre>
+        </div>
+
+        <!-- Django Backend -->
+        <div class="w3-container w3-white w3-padding-32 w3-margin">
+          <img src="https://static.djangoproject.com/img/logos/django-logo-negative.svg" alt="Django logo" width="80">
+            <h2 id="backend">Django Backend</h2>
+
+            <h3>Project Setup</h3>
+            <pre class="code-block">
+<span class="keyword">mkdir</span> fullstack-mobile
+<span class="keyword">cd</span> fullstack-mobile
+<span class="keyword">python</span> -m venv .venv
+<span class="comment"># Activate</span>
+<span class="comment"># macOS/Linux:</span>
+<span class="keyword">source</span> .venv/bin/activate
+<span class="comment"># Windows:</span>
+.venv\Scripts\activate
+            </pre>
+
+            <h3>Install Dependencies</h3>
+            <pre class="code-block">
+<span class="keyword">pip</span> install --upgrade pip
+<span class="keyword">pip</span> install django djangorestframework django-cors-headers
+            </pre>
+
+            <h3>Create Project & App</h3>
+            <pre class="code-block">
+<span class="keyword">django-admin</span> startproject backend .
+<span class="keyword">cd</span> backend
+<span class="keyword">python</span> manage.py startapp app
+            </pre>
+
+            <h3>Settings (backend/settings.py)</h3>
+            <pre class="code-block">
+<span class="variable">INSTALLED_APPS</span> = [
+  ...
+  <span class="string">'rest_framework'</span>,
+  <span class="string">'corsheaders'</span>,
+  <span class="string">'app'</span>,
+]
+
+<span class="variable">MIDDLEWARE</span> = [
+  <span class="string">'corsheaders.middleware.CorsMiddleware'</span>,
+  ...
+]
+
+<span class="variable">CORS_ALLOW_ALL_ORIGINS</span> = True
+<span class="comment"># or more secure:</span>
+<span class="comment"># CORS_ALLOWED_ORIGINS = ["http://localhost:19006","http://192.168.x.y:19006"]</span>
+            </pre>
+
+            <h3>Models (app/models.py)</h3>
+            <pre class="code-block">
+<span class="keyword">from</span> django.db <span class="keyword">import</span> models
+
+<span class="keyword">class</span> <span class="class-name">User</span>(models.Model):
+    <span class="variable">username</span> = models.CharField(max_length=100)
+    <span class="variable">email</span> = models.EmailField()
+
+    <span class="keyword">def</span> <span class="func-name">__str__</span>(self):
+        <span class="keyword">return</span> self.username
+            </pre>
+
+            <h3>Serializers (app/serializers.py)</h3>
+            <pre class="code-block">
+<span class="keyword">from</span> rest_framework <span class="keyword">import</span> serializers
+<span class="keyword">from</span> .models <span class="keyword">import</span> User
+
+<span class="keyword">class</span> <span class="class-name">UserSerializer</span>(serializers.ModelSerializer):
+    <span class="keyword">class</span> <span class="class-name">Meta</span>:
+        <span class="variable">model</span> = User
+        <span class="variable">fields</span> = [<span class="string">'id'</span>, <span class="string">'username'</span>, <span class="string">'email'</span>]
+            </pre>
+
+            <h3>Views (app/views.py)</h3>
+            <pre class="code-block">
+<span class="keyword">from</span> rest_framework.decorators <span class="keyword">import</span> api_view
+<span class="keyword">from</span> rest_framework.response <span class="keyword">import</span> Response
+<span class="keyword">from</span> .models <span class="keyword">import</span> User
+<span class="keyword">from</span> .serializers <span class="keyword">import</span> UserSerializer
+
+<span class="keyword">@api_view</span>([<span class="string">'GET'</span>])
+<span class="keyword">def</span> <span class="func-name">list_users</span>(<span class="param">request</span>):
+    <span class="variable">users</span> = User.objects.all()
+    <span class="variable">serializer</span> = UserSerializer(<span class="variable">users</span>, many=True)
+    <span class="keyword">return</span> Response(<span class="variable">serializer.data</span>)
+            </pre>
+
+            <h3>URLs (app/urls.py)</h3>
+            <pre class="code-block">
+<span class="keyword">from</span> django.urls <span class="keyword">import</span> path
+<span class="keyword">from</span> . <span class="keyword">import</span> views
+
+<span class="variable">urlpatterns</span> = [
+    path(<span class="string">'users/'</span>, views.list_users, name=<span class="string">'list_users'</span>),
+]
+            </pre>
+
+            <h3>Include in project urls.py</h3>
+            <pre class="code-block">
+<span class="keyword">from</span> django.urls <span class="keyword">import</span> path, include
+
+<span class="variable">urlpatterns</span> = [
+    path(<span class="string">'admin/'</span>, admin.site.urls),
+    path(<span class="string">'api/'</span>, include('app.urls')),
+]
+            </pre>
+
+            <h3>Migrations & Test Data</h3>
+            <pre class="code-block">
+<span class="keyword">python</span> manage.py makemigrations
+<span class="keyword">python</span> manage.py migrate
+<span class="comment"># Optional: create superuser</span>
+<span class="keyword">python</span> manage.py createsuperuser
+<span class="comment"># Optional test data</span>
+<span class="keyword">python</span> manage.py shell -c "from app.models import User; User.objects.create(username='Alice', email='a@a.com'); User.objects.create(username='Bob', email='b@b.com')"
+            </pre>
+
+            <h3>Run Development Server</h3>
+            <pre class="code-block">
+<span class="keyword">python</span> manage.py runserver 0.0.0.0:8000
+<span class="comment"># Check JSON at: http://127.0.0.1:8000/api/users/</span>
+            </pre>
+        </div>
+
+        <!-- React Native Frontend -->
+        <div class="w3-container w3-white w3-padding-32 w3-margin">
+          <img src="https://reactnative.dev/img/header_logo.svg" alt="React Native logo" width="80">
+
+            <h2 id="frontend">React Native Frontend</h2>
+
+            <h3>Create App</h3>
+            <pre class="code-block">
+<span class="keyword">cd</span> fullstack-mobile
+<span class="keyword">npx</span> create-expo-app frontend --template expo-template-blank-typescript
+<span class="keyword">cd</span> frontend
+<span class="keyword">npm</span> install axios
+            </pre>
+
+            <h3>Types (frontend/types.ts)</h3>
+            <pre class="code-block">
+<span class="keyword">export</span> <span class="keyword">interface</span> <span class="class-name">User</span> {
+  <span class="variable">id</span>: <span class="keyword">number</span>;
+  <span class="variable">username</span>: <span class="keyword">string</span>;
+  <span class="variable">email</span>: <span class="keyword">string</span>;
+}
+            </pre>
+
+            <h3>API Fetch (frontend/api.ts)</h3>
+            <pre class="code-block">
+<span class="keyword">import</span> axios <span class="keyword">from</span> <span class="string">'axios'</span>;
+<span class="keyword">import</span> { User } <span class="keyword">from</span> <span class="string">'./types'</span>;
+
+<span class="keyword">const</span> API_BASE = <span class="string">'http://192.168.X.Y:8000/api'</span>; <span class="comment">// adjust IP or localhost</span>
+
+<span class="keyword">export</span> <span class="keyword">const</span> <span class="func-name">getUsers</span> = <span class="keyword">async</span> (): Promise<User[]> =&gt; {
+  <span class="keyword">const</span> <span class="variable">response</span> = <span class="keyword">await</span> axios.get<User[]>(<span class="variable">`${API_BASE}/users/`</span>);
+  <span class="keyword">return</span> <span class="variable">response.data</span>;
+};
+            </pre>
+
+            <h3>Main App (frontend/App.tsx)</h3>
+            <pre class="code-block">
+<span class="keyword">import</span> React, { useEffect, useState } <span class="keyword">from</span> <span class="string">'react'</span>;
+<span class="keyword">import</span> { View, Text, FlatList, SafeAreaView } <span class="keyword">from</span> <span class="string">'react-native'</span>;
+<span class="keyword">import</span> { getUsers } <span class="keyword">from</span> <span class="string">'./api'</span>;
+<span class="keyword">import</span> { User } <span class="keyword">from</span> <span class="string">'./types'</span>;
+
+<span class="keyword">export default function</span> <span class="func-name">App</span>() {
+  <span class="keyword">const</span> [<span class="variable">users</span>, <span class="variable">setUsers</span>] = useState<User[]>([]);
+  useEffect(() =&gt; {
+    <span class="keyword">const</span> fetchUsers = <span class="keyword">async</span> () =&gt; {
+      <span class="keyword">try</span> {
+        <span class="keyword">const</span> data = <span class="keyword">await</span> get
+Users();
+        setUsers(data);
+      } <span class="keyword">catch</span> (error) {
+        console.error(error);
+      }
+    };
+    fetchUsers();
+  }, []);
+
+  <span class="keyword">return</span> (
+    &lt;SafeAreaView style={{ flex: 1, marginTop: 50 }}&gt;
+      &lt;FlatList
+        data={users}
+        keyExtractor={(item) =&gt; item.id.toString()}
+        renderItem={({ item }) =&gt; &lt;Text&gt;{item.username} ({item.email})&lt;/Text&gt;}
+      /&gt;
+    &lt;/SafeAreaView&gt;
+  );
+}
+            </pre>
+        </div>
+
+        <!-- Final Checks / Validation -->
+        <div class="w3-container w3-white w3-padding-32 w3-margin">
+            <h2 id="validation">Final Checks</h2>
+            <ul>
+                <li>✅ Django server running at <span class="string">http://127.0.0.1:8000/api/users/</span></li>
+                <li>✅ React Native app fetching data correctly</li>
+                <li>✅ CORS headers configured if using device/emulator</li>
+                <li>✅ Optional: Test users in Django admin</li>
+            </ul>
+        </div>
+
+        <!-- Essential Commands -->
+        <div class="w3-container w3-white w3-padding-32 w3-margin">
+            <h2 id="commands">Essential Commands</h2>
+            <pre class="code-block">
+<span class="comment"># Django</span>
+<span class="keyword">python</span> manage.py runserver
+<span class="keyword">python</span> manage.py makemigrations
+<span class="keyword">python</span> manage.py migrate
+
+<span class="comment"># React Native / Expo</span>
+<span class="keyword">npm</span> start
+<span class="keyword">expo</span> start
+            </pre>
+        </div>
+
+    </div> <!-- End main -->
+
+    <!-- Sidebar JS -->
+    <script>
+        function openSidebar() {
+            document.getElementById("mySidebar").style.display = "block";
+            document.getElementById("myOverlay").style.display = "block";
+        }
+
+        function closeSidebar() {
+            document.getElementById("mySidebar").style.display = "none";
+            document.getElementById("myOverlay").style.display = "none";
+        }
+    </script>
+
+</body>
+
+</html>
